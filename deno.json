@@ -6,7 +6,7 @@
   },
   "lint": {
     "plugins": [
-      "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.4/lint.ts",
+      "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.6/lint.ts",
       "jsr:@aireone/deno-lint-curly"
     ],
     "rules": {
@@ -24,7 +24,7 @@
     "examples/"
   ],
   "imports": {
-    "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.4/",
+    "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.6/",
     "lume/jsx-runtime": "https://cdn.jsdelivr.net/gh/oscarotero/ssx@0.1.15/jsx-runtime.ts"
   },
   "tasks": {
@@ -43,7 +43,11 @@
     "test": "deno test -A --parallel --coverage",
     "check": "deno check",
     "lint": "deno lint && deno fmt --check",
-    "fix": "deno lint --fix && deno fmt"
+    "fix": "deno lint --fix && deno fmt",
+    "new": {
+      "description": "Create new content or code using artifacts",
+      "command": "deno task lume new"
+    }
   },
   "compilerOptions": {
     "types": [
@@ -83,7 +87,8 @@
   },
   "allowScripts": {
     "deny": [
-      "npm:sharp"
+      "npm:sharp",
+      "npm:@parcel/watcher"
     ]
   }
 }

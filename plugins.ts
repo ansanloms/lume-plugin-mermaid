@@ -1,6 +1,5 @@
 import { merge } from "lume/core/utils/object.ts";
 import type Site from "lume/core/site.ts";
-import { Page } from "lume/core/file.ts";
 
 import "lume/types.ts";
 
@@ -102,7 +101,7 @@ await run({
 
 `.trim();
 
-    site.process([".html"], (pages: Page[]) => {
+    site.process([".html"], (pages) => {
       for (const page of pages) {
         if (!page.document) {
           continue;
