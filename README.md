@@ -49,17 +49,35 @@ site.use(mermaid({
     },
   ],
   querySelector: "pre > code.language-mermaid",
+  zoom: {
+    enable: true,
+    wheel: ["ctrl", "meta"],
+    aspectRatio: "4:3",
+  },
   scriptSrc: "/mermaid/scripts/mermaid.mjs",
 }));
 ```
 
-| Option          | Type         | Default                          | Description                                    |
-| --------------- | ------------ | -------------------------------- | ---------------------------------------------- |
-| `version`       | `string`     | `"11.15.0"`                      | Mermaid version to use                         |
-| `config`        | `object`     | `{}`                             | Configuration passed to `mermaid.initialize()` |
-| `icons`         | `IconPack[]` | logos, aws                       | Icon packs to load                             |
-| `querySelector` | `string`     | `"pre > code.language-mermaid"`  | CSS selector for mermaid target elements       |
-| `scriptSrc`     | `string`     | `"/mermaid/scripts/mermaid.mjs"` | Path to the mermaid runner script              |
+| Option          | Type          | Default                          | Description                                    |
+| --------------- | ------------- | -------------------------------- | ---------------------------------------------- |
+| `version`       | `string`      | `"11.15.0"`                      | Mermaid version to use                         |
+| `config`        | `object`      | `{}`                             | Configuration passed to `mermaid.initialize()` |
+| `icons`         | `IconPack[]`  | logos, aws                       | Icon packs to load                             |
+| `querySelector` | `string`      | `"pre > code.language-mermaid"`  | CSS selector for mermaid target elements       |
+| `zoom`          | `ZoomOptions` | see below                        | Pan & zoom behavior for rendered diagrams      |
+| `scriptSrc`     | `string`      | `"/mermaid/scripts/mermaid.mjs"` | Path to the mermaid runner script              |
+
+### Zoom
+
+Rendered diagrams can be panned and zoomed — drag to pan, use the wheel or the on-screen buttons to zoom, and double-click to reset. Configure the behavior via the `zoom` option.
+
+| Option        | Type                              | Default            | Description                                                                            |
+| ------------- | --------------------------------- | ------------------ | -------------------------------------------------------------------------------------- |
+| `enable`      | `boolean`                         | `true`             | Enable / disable pan & zoom                                                            |
+| `wheel`       | `boolean \| ("ctrl" \| "meta")[]` | `["ctrl", "meta"]` | Wheel zoom. `false` = off, `true` = always, array = only while one of the keys is held |
+| `aspectRatio` | `string`                          | `"4:3"`            | Aspect ratio of the pan/zoom area (e.g. `"16:9"`). Empty string = unconstrained        |
+| `maxWidth`    | `string`                          | —                  | Max width of the pan/zoom area (CSS value, e.g. `"600px"`). Unset = no limit           |
+| `maxHeight`   | `string`                          | —                  | Max height of the pan/zoom area (CSS value, e.g. `"80vh"`). Unset = no limit           |
 
 ### Custom Script
 
@@ -67,7 +85,7 @@ Use `scriptSrc` to replace the mermaid runner script with your own. The custom s
 
 ```js
 /**
- * @param {{ mermaid: Object, config: Object, icons: Icon[], querySelector: string }} options
+ * @param {{ mermaid: Object, config: Object, icons: Icon[], querySelector: string, zoom: ZoomOptions }} options
  */
 export const run = async (options) => {
   // ...
