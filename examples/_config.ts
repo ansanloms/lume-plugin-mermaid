@@ -12,6 +12,13 @@ site
   .use(mermaid({
     config: { theme: "forest" },
     scriptSrc: "/scripts/mermaid.mjs",
+    zoom: {
+      enable: true,
+      wheel: true,
+      aspectRatio: "16/9",
+      maxWidth: "50%",
+      maxHeight: "64svh",
+    },
   }))
   .process([".html"], (pages) => {
     for (const page of pages) {

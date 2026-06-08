@@ -19,6 +19,42 @@ interface IconPack {
 }
 
 /**
+ * パン・ズームの設定。
+ */
+interface ZoomOptions {
+  /**
+   * パン・ズーム機能の有効・無効。
+   */
+  enable: boolean;
+
+  /**
+   * ホイール操作でのズーム挙動。
+   * false               : ホイールでズームしない。
+   * true                : 常にホイールでズームする。
+   * ("ctrl" | "meta")[] : 指定したキーを押下している間だけホイールでズームする。
+   */
+  wheel?: boolean | ("ctrl" | "meta")[];
+
+  /**
+   * パン・ズーム領域のアスペクト比。"4:3" や "16:9" のように指定する。
+   * 空文字を指定した場合は領域比を固定しない。
+   */
+  aspectRatio?: string;
+
+  /**
+   * パン・ズーム領域の最大幅。CSS の max-width 値。"600px" や "80vw" のように指定する。
+   * 未指定の場合は最大幅を制限しない。
+   */
+  maxWidth?: string;
+
+  /**
+   * パン・ズーム領域の最大高さ。CSS の max-height 値。"400px" や "80vh" のように指定する。
+   * 未指定の場合は最大高さを制限しない。
+   */
+  maxHeight?: string;
+}
+
+/**
  * オプション。
  */
 export interface Options {
@@ -41,6 +77,11 @@ export interface Options {
    * mermaid 描画対象要素のセレクタ。
    */
   querySelector: string;
+
+  /**
+   * パン・ズームの設定。
+   */
+  zoom: ZoomOptions;
 
   /**
    * mermaid 実行スクリプトのパス。
@@ -66,6 +107,11 @@ export const defaults: Options = {
     },
   ],
   querySelector: "pre > code.language-mermaid",
+  zoom: {
+    enable: true,
+    wheel: ["ctrl", "meta"],
+    aspectRatio: "4:3",
+  },
   scriptSrc: "/mermaid/scripts/mermaid.mjs",
 };
 
@@ -97,6 +143,7 @@ await run({
   config: ${JSON.stringify(options.config)},
   icons: ${JSON.stringify(options.icons)},
   querySelector: "${options.querySelector}",
+  zoom: ${JSON.stringify(options.zoom)},
 })
 
 `.trim();
