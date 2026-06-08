@@ -1,8 +1,10 @@
 import { getCurrentColorScheme } from "./color-scheme.mjs";
+import { enableZoom } from "/mermaid/scripts/zoom.mjs";
 
 /**
  * @typedef {{ name: string, url: string }} Icon
- * @typedef {{ mermaid: Object, config: Object, icons: Icon[], querySelector: string }} Options
+ * @typedef {{ enable: boolean, wheel?: boolean | ("ctrl" | "meta")[], aspectRatio?: string, maxWidth?: string, maxHeight?: string }} Zoom
+ * @typedef {{ mermaid: Object, config: Object, icons: Icon[], querySelector: string, zoom: Zoom }} Options
  */
 
 /**
@@ -10,7 +12,7 @@ import { getCurrentColorScheme } from "./color-scheme.mjs";
  */
 export const run = async (options) => {
   globalThis.__MERMAID = options;
-  const { mermaid, config, icons, querySelector } = options;
+  const { mermaid, config, icons, querySelector, zoom } = options;
 
   mermaid.registerIconPacks(icons.map(({ name, url }) => ({
     name,
@@ -28,7 +30,13 @@ export const run = async (options) => {
     element.dataset.mermaid = element.innerText;
   });
 
-  await mermaid.run({ querySelector });
+  try {
+    // 壊れた図が含まれていても例外で停止させず、描画できた図はすべて処理する。
+    await mermaid.run({ querySelector, suppressErrors: true });
+  } finally {
+    // run が途中で失敗しても、描画済みの図にはズームを付与する。
+    enableZoom(querySelector, zoom);
+  }
 };
 
 globalThis.addEventListener("changeColorScheme", async (event) => {
@@ -39,7 +47,7 @@ globalThis.addEventListener("changeColorScheme", async (event) => {
   /** @type Options */
   const options = globalThis.__MERMAID;
 
-  const { mermaid, config, querySelector } = options;
+  const { mermaid, config, querySelector, zoom } = options;
 
   mermaid.initialize({
     ...config,
@@ -47,11 +55,18 @@ globalThis.addEventListener("changeColorScheme", async (event) => {
     startOnLoad: false,
   });
 
-  for await (
+  for (
     const element of Array.from(document.querySelectorAll(querySelector))
   ) {
     delete element.dataset.processed;
     element.innerHTML = element.dataset.mermaid;
-    mermaid.init(undefined, element);
+  }
+
+  try {
+    // run は Promise を返すため、描画完了を待ってからズームを付け直せる。
+    await mermaid.run({ querySelector, suppressErrors: true });
+  } finally {
+    // 再描画で wrapper が消えるため、ズームを付け直す。
+    enableZoom(querySelector, zoom);
   }
 });

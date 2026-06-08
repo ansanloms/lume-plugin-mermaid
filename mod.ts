@@ -10,6 +10,7 @@ export default (options: Partial<Options> = {}) => {
 
     [
       "scripts/mermaid.mjs",
+      "scripts/zoom.mjs",
     ].forEach((file) => {
       if (!file.startsWith("_")) {
         site.remoteFile(`/mermaid/${file}`, import.meta.resolve(`./${file}`));
