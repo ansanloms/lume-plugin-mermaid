@@ -141,7 +141,14 @@ import { run } from "${site.url(options.scriptSrc)}";
 await run({
   mermaid,
   config: ${JSON.stringify(options.config)},
-  icons: ${JSON.stringify(options.icons)},
+  icons: ${
+      JSON.stringify(
+        options.icons.map((icon) => ({
+          name: icon.name,
+          url: site.url(`/mermaid/icons/${icon.name}.json`),
+        })),
+      )
+    },
   querySelector: "${options.querySelector}",
   zoom: ${JSON.stringify(options.zoom)},
 })
