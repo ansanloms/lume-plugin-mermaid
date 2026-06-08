@@ -137,6 +137,8 @@ export default function (userOptions?: Partial<Options>) {
     const mermaidScript = `
 import mermaid from "${site.url("/mermaid/mermaid.esm.min.mjs")}";
 import { run } from "${site.url(options.scriptSrc)}";
+import { enableZoom } from "${site.url("/mermaid/scripts/zoom.mjs")}";
+import { enableCopy } from "${site.url("/mermaid/scripts/copy.mjs")}";
 
 await run({
   mermaid,
@@ -151,6 +153,8 @@ await run({
     },
   querySelector: "${options.querySelector}",
   zoom: ${JSON.stringify(options.zoom)},
+  enableZoom,
+  enableCopy,
 })
 
 `.trim();

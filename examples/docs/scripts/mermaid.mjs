@@ -1,19 +1,29 @@
 import { getCurrentColorScheme } from "./color-scheme.mjs";
-import { enableZoom } from "../mermaid/scripts/zoom.mjs";
-import { enableCopy } from "../mermaid/scripts/copy.mjs";
 
 /**
  * @typedef {{ name: string, url: string }} Icon
  * @typedef {{ enable: boolean, wheel?: boolean | ("ctrl" | "meta")[], aspectRatio?: string, maxWidth?: string, maxHeight?: string }} Zoom
- * @typedef {{ mermaid: Object, config: Object, icons: Icon[], querySelector: string, zoom: Zoom }} Options
+ * @typedef {(querySelector: string, zoom?: Zoom) => void} EnableZoom
+ * @typedef {(querySelector: string) => void} EnableCopy
+ * @typedef {{ mermaid: Object, config: Object, icons: Icon[], querySelector: string, zoom: Zoom, enableZoom: EnableZoom, enableCopy: EnableCopy }} Options
  */
 
 /**
+ * enableZoom / enableCopy はプラグインが生成する bootstrap から注入される。
+ *
  * @param {Options} options
  */
 export const run = async (options) => {
   globalThis.__MERMAID = options;
-  const { mermaid, config, icons, querySelector, zoom } = options;
+  const {
+    mermaid,
+    config,
+    icons,
+    querySelector,
+    zoom,
+    enableZoom,
+    enableCopy,
+  } = options;
 
   mermaid.registerIconPacks(icons.map(({ name, url }) => ({
     name,
@@ -51,7 +61,8 @@ globalThis.addEventListener("changeColorScheme", async (event) => {
   /** @type Options */
   const options = globalThis.__MERMAID;
 
-  const { mermaid, config, querySelector, zoom } = options;
+  const { mermaid, config, querySelector, zoom, enableZoom, enableCopy } =
+    options;
 
   mermaid.initialize({
     ...config,

@@ -1,17 +1,28 @@
-import { enableZoom } from "./zoom.mjs";
-import { enableCopy } from "./copy.mjs";
-
 /**
  * @typedef {{ name: string, url: string }} Icon
  * @typedef {{ enable: boolean, wheel?: boolean | ("ctrl" | "meta")[], aspectRatio?: string, maxWidth?: string, maxHeight?: string }} Zoom
- * @typedef {{ mermaid: Object, config: Object, icons: Icon[], querySelector: string, zoom: Zoom }} Options
+ * @typedef {(querySelector: string, zoom?: Zoom) => void} EnableZoom
+ * @typedef {(querySelector: string) => void} EnableCopy
+ * @typedef {{ mermaid: Object, config: Object, icons: Icon[], querySelector: string, zoom: Zoom, enableZoom: EnableZoom, enableCopy: EnableCopy }} Options
  */
 
 /**
+ * enableZoom / enableCopy はプラグインが生成する bootstrap から注入される。
+ * runner 側でプラグイン内部スクリプトへのパスを import しないことで、配信先の
+ * subpath や配置に依存せず動作する。
+ *
  * @param {Options} options
  */
 export const run = async (options) => {
-  const { mermaid, config, icons, querySelector, zoom } = options;
+  const {
+    mermaid,
+    config,
+    icons,
+    querySelector,
+    zoom,
+    enableZoom,
+    enableCopy,
+  } = options;
 
   mermaid.registerIconPacks(icons.map(({ name, url }) => ({
     name,
