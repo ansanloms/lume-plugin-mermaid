@@ -1,0 +1,33 @@
+body {
+  color-scheme: light dark;
+
+  &.light {
+    background-color: #fff;
+    color-scheme: light;
+  }
+
+  &.dark {
+    background-color: #181a1b;
+    color-scheme: dark;
+  }
+}
+
+.headerChangeColorScheme {
+  grid-area: color;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  padding: 0.8rem;
+  border-radius: 0.8rem;
+  text-decoration: none;
+  transition: background-color 0.4s;
+
+  &.light::before {
+    content: "🌞";
+  }
+
+  &.dark::before {
+    content: "🌛";
+  }
+}
