@@ -15,6 +15,8 @@
  * }} Zoom
  */
 
+import { createButton, ensureToolbar, injectStyle } from "./overlay.mjs";
+
 /**
  * ユーザ操作(ホイール / ボタン)で許容するズーム倍率の下限・上限。
  * 初期フィットの倍率はこの範囲に縛られない。
@@ -66,80 +68,6 @@ const shouldZoomOnWheel = (event, wheel) => {
 };
 
 /**
- * 操作ボタン 1 つを生成する。
- *
- * @param {string} label ボタンに表示する記号。
- * @param {string} title ツールチップ。
- * @param {() => void} onClick クリック時の処理。
- * @returns {HTMLButtonElement}
- */
-const createButton = (label, title, onClick) => {
-  const button = document.createElement("button");
-  button.type = "button";
-  button.textContent = label;
-  button.title = title;
-
-  Object.assign(button.style, {
-    width: "28px",
-    height: "28px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "0",
-    margin: "0",
-    fontSize: "18px",
-    lineHeight: "1",
-    cursor: "pointer",
-    border: "1px solid rgba(0, 0, 0, 0.15)",
-    borderRadius: "6px",
-    background: "rgba(255, 255, 255, 0.85)",
-    color: "#24292f",
-  });
-
-  // ボタン操作をラッパのドラッグ・ダブルクリック判定に巻き込ませない。
-  button.addEventListener("pointerdown", (event) => {
-    event.stopPropagation();
-  });
-  button.addEventListener("dblclick", (event) => {
-    event.stopPropagation();
-  });
-  button.addEventListener("click", (event) => {
-    event.stopPropagation();
-    onClick();
-  });
-
-  return button;
-};
-
-/**
- * 右上に配置する操作ボタン群を生成する。
- *
- * @param {{ zoomIn: () => void, zoomOut: () => void, reset: () => void }} handlers
- * @returns {HTMLDivElement}
- */
-const createControls = (handlers) => {
-  const controls = document.createElement("div");
-  controls.className = "mermaid-zoom-controls";
-
-  Object.assign(controls.style, {
-    position: "absolute",
-    top: "8px",
-    right: "8px",
-    display: "flex",
-    gap: "4px",
-    zIndex: "1",
-  });
-
-  controls.append(
-    createButton("−", "縮小", handlers.zoomOut),
-    createButton("↺", "リセット", handlers.reset),
-    createButton("+", "拡大", handlers.zoomIn),
-  );
-
-  return controls;
-};
-
-/**
  * 1 つの mermaid SVG にパン・ズーム操作と操作ボタンを仕込む。
  *
  * @param {SVGElement} svg
@@ -155,7 +83,7 @@ const setupZoom = (svg, settings) => {
   svg.dataset.zoomReady = "true";
 
   const wrapper = document.createElement("div");
-  wrapper.className = "mermaid-panzoom";
+  wrapper.className = "mermaid-panzoom mermaid-overlay";
   Object.assign(wrapper.style, {
     overflow: "hidden",
     position: "relative",
@@ -281,11 +209,15 @@ const setupZoom = (svg, settings) => {
   // ダブルクリックでフィット状態に戻す。
   wrapper.addEventListener("dblclick", fit);
 
-  wrapper.appendChild(createControls({
-    zoomIn: () => zoomFromCenter(BUTTON_ZOOM_STEP),
-    zoomOut: () => zoomFromCenter(1 / BUTTON_ZOOM_STEP),
-    reset: fit,
-  }));
+  // ボタン群は共通ツールバーへ追加する。copy.mjs のコピーボタンも同じ
+  // ツールバーに並び、ホバー時のみ表示される。
+  injectStyle();
+  const toolbar = ensureToolbar(wrapper);
+  toolbar.append(
+    createButton("−", "縮小", () => zoomFromCenter(1 / BUTTON_ZOOM_STEP)),
+    createButton("↺", "リセット", fit),
+    createButton("+", "拡大", () => zoomFromCenter(BUTTON_ZOOM_STEP)),
+  );
 
   // 初期表示は領域にフィットさせる。
   fit();

@@ -1,5 +1,6 @@
 import { getCurrentColorScheme } from "./color-scheme.mjs";
 import { enableZoom } from "/mermaid/scripts/zoom.mjs";
+import { enableCopy } from "/mermaid/scripts/copy.mjs";
 
 /**
  * @typedef {{ name: string, url: string }} Icon
@@ -28,14 +29,17 @@ export const run = async (options) => {
   document.querySelectorAll(querySelector).forEach((element, index) => {
     element.id = `mermaid-diagram-${index}`;
     element.dataset.mermaid = element.innerText;
+    // コピー機能用に元コードを退避する(copy.mjs が参照する)。
+    element.dataset.mermaidSource = element.textContent;
   });
 
   try {
     // 壊れた図が含まれていても例外で停止させず、描画できた図はすべて処理する。
     await mermaid.run({ querySelector, suppressErrors: true });
   } finally {
-    // run が途中で失敗しても、描画済みの図にはズームを付与する。
+    // run が途中で失敗しても、描画済みの図にはズーム・コピーを付与する。
     enableZoom(querySelector, zoom);
+    enableCopy(querySelector);
   }
 };
 
@@ -63,10 +67,11 @@ globalThis.addEventListener("changeColorScheme", async (event) => {
   }
 
   try {
-    // run は Promise を返すため、描画完了を待ってからズームを付け直せる。
+    // run は Promise を返すため、描画完了を待ってからズーム・コピーを付け直せる。
     await mermaid.run({ querySelector, suppressErrors: true });
   } finally {
-    // 再描画で wrapper が消えるため、ズームを付け直す。
+    // 再描画で wrapper が消えるため、ズーム・コピーを付け直す。
     enableZoom(querySelector, zoom);
+    enableCopy(querySelector);
   }
 });
