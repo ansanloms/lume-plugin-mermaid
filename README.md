@@ -83,16 +83,21 @@ Rendered diagrams can be panned and zoomed — drag to pan, use the wheel or the
 
 Use `scriptSrc` to replace the mermaid runner script with your own. The custom script must export a `run` function with the following signature.
 
+The plugin injects `enableZoom` and `enableCopy` into `options`, so the custom runner receives them as arguments instead of importing them. This keeps the runner free of paths into the plugin's internals: every asset URL is resolved through `site.url()` at build time, so the output works under any subpath.
+
 ```js
 /**
- * @param {{ mermaid: Object, config: Object, icons: Icon[], querySelector: string, zoom: ZoomOptions }} options
+ * @param {{ mermaid: Object, config: Object, icons: Icon[], querySelector: string, zoom: ZoomOptions, enableZoom: Function, enableCopy: Function }} options
  */
 export const run = async (options) => {
+  const { mermaid, querySelector, zoom, enableZoom, enableCopy } = options;
   // ...
+  enableZoom(querySelector, zoom);
+  enableCopy(querySelector);
 };
 ```
 
-See `examples/docs/scripts/mermaid.js` for a color scheme integration example.
+See `examples/docs/scripts/mermaid.mjs` for a color scheme integration example.
 
 ### Icon Packs
 
