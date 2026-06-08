@@ -1,6 +1,6 @@
 import { getCurrentColorScheme } from "./color-scheme.mjs";
-import { enableZoom } from "/mermaid/scripts/zoom.mjs";
-import { enableCopy } from "/mermaid/scripts/copy.mjs";
+import { enableZoom } from "../mermaid/scripts/zoom.mjs";
+import { enableCopy } from "../mermaid/scripts/copy.mjs";
 
 /**
  * @typedef {{ name: string, url: string }} Icon
