@@ -1,7 +1,7 @@
-import { merge } from "lume/core/utils/object.ts";
-import type Site from "lume/core/site.ts";
+import { merge } from "@lumeland/core/utils/object.ts";
+import type Site from "@lumeland/core/site.ts";
 
-import "lume/types.ts";
+import "@lumeland/core/types.ts";
 
 /**
  * icon pack 。
@@ -102,8 +102,7 @@ export const defaults: Options = {
       // 注意: CC-BY-ND-2.0
       // aws-icons-mermaid.json 内に記述あり。
       // ビルド結果にそのままこの json が含まれるからそれでいいはず。
-      url:
-        "https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/refs/tags/v23.0/dist/aws-icons-mermaid.json",
+      url: "https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/refs/tags/v23.0/dist/aws-icons-mermaid.json",
     },
   ],
   querySelector: "pre > code.language-mermaid",
@@ -143,14 +142,12 @@ import { enableCopy } from "${site.url("/mermaid/scripts/copy.mjs")}";
 await run({
   mermaid,
   config: ${JSON.stringify(options.config)},
-  icons: ${
-      JSON.stringify(
-        options.icons.map((icon) => ({
-          name: icon.name,
-          url: site.url(`/mermaid/icons/${icon.name}.json`),
-        })),
-      )
-    },
+  icons: ${JSON.stringify(
+    options.icons.map((icon) => ({
+      name: icon.name,
+      url: site.url(`/mermaid/icons/${icon.name}.json`),
+    })),
+  )},
   querySelector: "${options.querySelector}",
   zoom: ${JSON.stringify(options.zoom)},
   enableZoom,

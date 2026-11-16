@@ -1,6 +1,6 @@
-import plugins, { Options } from "./plugins.ts";
+import plugins, { type Options } from "./plugins.ts";
 
-import type Site from "lume/core/site.ts";
+import type Site from "@lumeland/core/site.ts";
 
 export type { Options } from "./plugins.ts";
 
@@ -15,7 +15,7 @@ export default (options: Partial<Options> = {}) => {
       "scripts/overlay.mjs",
     ].forEach((file) => {
       if (!file.startsWith("_")) {
-        site.remoteFile(`/mermaid/${file}`, import.meta.resolve(`./${file}`));
+        site.remote(`/mermaid/${file}`, import.meta.resolve(`./${file}`));
         site.add(`/mermaid/${file}`);
       }
     });

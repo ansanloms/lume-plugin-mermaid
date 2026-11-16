@@ -1,4 +1,4 @@
-import lume from "lume/mod.ts";
+import lume from "@lumeland/lume";
 import mermaid from "../mod.ts";
 
 const site = lume({
@@ -9,17 +9,19 @@ site
   .copy("/scripts/mermaid.mjs")
   .copy("/scripts/color-scheme.mjs")
   .copy("/styles/general.css")
-  .use(mermaid({
-    config: { theme: "forest" },
-    scriptSrc: "/scripts/mermaid.mjs",
-    zoom: {
-      enable: true,
-      wheel: true,
-      aspectRatio: "16/9",
-      maxWidth: "50%",
-      maxHeight: "64svh",
-    },
-  }))
+  .use(
+    mermaid({
+      config: { theme: "forest" },
+      scriptSrc: "/scripts/mermaid.mjs",
+      zoom: {
+        enable: true,
+        wheel: true,
+        aspectRatio: "16/9",
+        maxWidth: "50%",
+        maxHeight: "64svh",
+      },
+    }),
+  )
   .process([".html"], (pages) => {
     for (const page of pages) {
       if (!page.document) {

@@ -1,0 +1,11 @@
+{
+  "printWidth": 80,
+  "ignorePatterns": [
+    "_site",
+    "_cache",
+    "node_modules",
+    "examples/_site",
+    "examples/_cache",
+    "package-lock.json"
+  ]
+}
