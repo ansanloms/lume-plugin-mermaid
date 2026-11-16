@@ -4,16 +4,22 @@ on:
   push:
     branches: [main]
 
+permissions: {}
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Clone repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.4.0
+        with:
+          persist-credentials: false
 
       - name: Setup Node
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v7.1.0
         with:
           node-version: 24
           cache: npm
@@ -24,9 +30,31 @@ jobs:
       - name: Build site
         run: npm run examples:build -- --location=https://ansanloms.github.io/lume-plugin-mermaid/
 
+      - name: Upload site
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: site
+          path: examples/_site
+          if-no-files-found: error
+          include-hidden-files: true
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: github-pages
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download site
+        uses: actions/download-artifact@v8.0.2
+        with:
+          name: site
+          path: _site
+
       - name: Deploy
         uses: crazy-max/ghaction-github-pages@v2.0.1
         with:
-          build_dir: ./examples/_site
+          build_dir: ./_site
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
