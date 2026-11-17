@@ -114,17 +114,6 @@ export const defaults: Options = {
   scriptSrc: "/mermaid/scripts/mermaid.mjs",
 };
 
-/**
- * インライン script に埋め込む値を JS のリテラル式にする。
- * `<` をすべて `\u003c` にして、値に含まれる `</script>`・`<!--`・`<script` が
- * HTML のパースに影響しないようにする。
- * 置換を `</` だけに狭めないこと。`<!--` と `<script` を含む値で HTML パーサの
- * 状態が変わり、本物の `</script>` で script が終わらなくなる。
- */
-function toScriptLiteral(value: unknown): string {
-  return JSON.stringify(value).replace(/</g, "\\u003c");
-}
-
 export default function (userOptions?: Partial<Options>) {
   const options = merge(defaults, userOptions);
 
@@ -144,28 +133,21 @@ export default function (userOptions?: Partial<Options>) {
       }
     });
 
-    const mermaidScript = `
-import mermaid from ${toScriptLiteral(site.url("/mermaid/mermaid.esm.min.mjs"))};
-import { run } from ${toScriptLiteral(site.url(options.scriptSrc))};
-import { enableZoom } from ${toScriptLiteral(site.url("/mermaid/scripts/zoom.mjs"))};
-import { enableCopy } from ${toScriptLiteral(site.url("/mermaid/scripts/copy.mjs"))};
-
-await run({
-  mermaid,
-  config: ${toScriptLiteral(options.config)},
-  icons: ${toScriptLiteral(
-    options.icons.map((icon) => ({
-      name: icon.name,
-      url: site.url(`/mermaid/icons/${icon.name}.json`),
-    })),
-  )},
-  querySelector: ${toScriptLiteral(options.querySelector)},
-  zoom: ${toScriptLiteral(options.zoom)},
-  enableZoom,
-  enableCopy,
-})
-
-`.trim();
+    const payload = {
+      mermaidSrc: site.url("/mermaid/mermaid.esm.min.mjs"),
+      runnerSrc: site.url(options.scriptSrc),
+      zoomSrc: site.url("/mermaid/scripts/zoom.mjs"),
+      copySrc: site.url("/mermaid/scripts/copy.mjs"),
+      config: options.config,
+      icons: options.icons.map((icon) => ({
+        name: icon.name,
+        url: site.url(`/mermaid/icons/${icon.name}.json`),
+      })),
+      querySelector: options.querySelector,
+      zoom: options.zoom,
+    };
+    const bootstrapSrc = site.url("/mermaid/scripts/bootstrap.mjs");
+    const payloadJson = JSON.stringify(payload);
 
     site.process([".html"], (pages) => {
       for (const page of pages) {
@@ -175,7 +157,8 @@ await run({
 
         const script = page.document.createElement("script");
         script.setAttribute("type", "module");
-        script.innerText = mermaidScript;
+        script.setAttribute("src", bootstrapSrc);
+        script.setAttribute("data-lume-mermaid", payloadJson);
 
         page.document.body.append(script);
       }
