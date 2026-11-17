@@ -25,8 +25,9 @@ npm run fix             # oxlint --fix + oxfmt
 
 ## ファイル構成
 
-- `mod.ts` — エントリポイント。`plugins.ts` をラップし、`scripts/mermaid.mjs` を remoteFile として配信する。
-- `plugins.ts` — プラグイン本体。npm から mermaid ESM モジュールとアイコンパックを取得し、全 HTML ページに初期化スクリプトを注入する。
+- `mod.ts` — エントリポイント。`plugins.ts` をラップし、`scripts/*.mjs` (`bootstrap.mjs`・`mermaid.mjs`・`zoom.mjs`・`copy.mjs`・`overlay.mjs`) を `site.remote` + `site.add` で `/mermaid/scripts/` に配信する。`plugins.ts` が注入する要素は `/mermaid/scripts/bootstrap.mjs` を参照するので、`mod.ts` を通さずに `plugins.ts` だけを使うと bootstrap が配信されない。
+- `plugins.ts` — プラグイン本体。npm から mermaid ESM モジュールとアイコンパックを取得し、全 HTML ページに bootstrap の script 要素を注入する。オプションは `data-lume-mermaid` 属性に JSON で渡す。
+- `scripts/bootstrap.mjs` — 注入された script 要素の data 属性からオプションを読み、各モジュールを読み込んで `run` を呼ぶ固定スクリプト。
 - `scripts/mermaid.mjs` — クライアントサイドで mermaid を初期化・実行するランナースクリプト。
 - `_config.ts` — このリポジトリ自体の Lume 設定(プラグイン開発用)。
 - `package.json` — 依存と npm scripts。`tsconfig.json`・`.oxlintrc.json`・`.oxfmtrc.json` は検査の設定。

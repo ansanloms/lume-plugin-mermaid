@@ -10,6 +10,7 @@ export default (options: Partial<Options> = {}) => {
 
     [
       "scripts/mermaid.mjs",
+      "scripts/bootstrap.mjs",
       "scripts/zoom.mjs",
       "scripts/copy.mjs",
       "scripts/overlay.mjs",
