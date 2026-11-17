@@ -32,7 +32,8 @@ jobs:
         run: npm ci
 
       - name: Build site
-        run: npm run examples:build -- --location=https://ansanloms.github.io/lume-plugin-mermaid/
+        working-directory: examples
+        run: npx lume build --location=https://ansanloms.github.io/lume-plugin-mermaid/
 
       - name: Upload site
         uses: actions/upload-artifact@v7.0.2

@@ -7,8 +7,6 @@
   "scripts": {
     "build": "lume build",
     "serve": "lume build -s",
-    "examples:build": "cd examples && lume build",
-    "examples:serve": "cd examples && lume build -s",
     "check": "tsc --noEmit",
     "lint": "oxlint . && oxfmt --check .",
     "fix": "oxlint . --fix && oxfmt ."

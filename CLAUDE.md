@@ -18,8 +18,6 @@ CDN の URL を直接ブラウザから読み込まず、ビルド時に mermaid
 ```sh
 npm run build           # ルートのサイトビルド
 npm run serve           # ルートの開発サーバ起動
-npm run examples:build  # examples のビルド
-npm run examples:serve  # examples の開発サーバ起動
 npm run check           # 型チェック (tsc --noEmit)
 npm run lint            # oxlint + oxfmt チェック
 npm run fix             # oxlint --fix + oxfmt
@@ -35,8 +33,9 @@ npm run fix             # oxlint --fix + oxfmt
 
 ## examples/
 
-`examples/` はプラグインの動作確認用の Lume サイト。独自の `package.json` は持たず、ルートの `package.json` と `node_modules` を共有する。`examples/_config.ts` は `../mod.ts` を相対 import する。
+`examples/` はプラグインの動作確認用の Lume サイト。`examples/package.json` は `serve` だけを持ち、依存は持たない。依存はルートの `node_modules` を使う (先にルートで `npm ci` が要る)。`examples/_config.ts` は `../mod.ts` を相対 import する。
 
 ```sh
-npm run examples:serve
+cd examples && npm run serve
+cd examples && npx lume build
 ```
