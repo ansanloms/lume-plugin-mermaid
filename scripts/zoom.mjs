@@ -60,8 +60,9 @@ const shouldZoomOnWheel = (event, wheel) => {
     return true;
   }
   if (Array.isArray(wheel)) {
-    return wheel.some((key) =>
-      (key === "ctrl" && event.ctrlKey) || (key === "meta" && event.metaKey)
+    return wheel.some(
+      (key) =>
+        (key === "ctrl" && event.ctrlKey) || (key === "meta" && event.metaKey),
     );
   }
   return false;
@@ -123,8 +124,7 @@ const setupZoom = (svg, settings) => {
   let translateY = 0;
 
   const apply = () => {
-    svg.style.transform =
-      `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+    svg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
   };
 
   // 図全体を領域に収める(contain)。リセット時の基準状態でもある。
@@ -163,19 +163,23 @@ const setupZoom = (svg, settings) => {
     zoomAt(rect.width / 2, rect.height / 2, factor);
   };
 
-  wrapper.addEventListener("wheel", (event) => {
-    if (!shouldZoomOnWheel(event, wheel)) {
-      return;
-    }
-    event.preventDefault();
+  wrapper.addEventListener(
+    "wheel",
+    (event) => {
+      if (!shouldZoomOnWheel(event, wheel)) {
+        return;
+      }
+      event.preventDefault();
 
-    const rect = wrapper.getBoundingClientRect();
-    const pointerX = event.clientX - rect.left;
-    const pointerY = event.clientY - rect.top;
-    const factor = event.deltaY < 0 ? 1.1 : 1 / 1.1;
+      const rect = wrapper.getBoundingClientRect();
+      const pointerX = event.clientX - rect.left;
+      const pointerY = event.clientY - rect.top;
+      const factor = event.deltaY < 0 ? 1.1 : 1 / 1.1;
 
-    zoomAt(pointerX, pointerY, factor);
-  }, { passive: false });
+      zoomAt(pointerX, pointerY, factor);
+    },
+    { passive: false },
+  );
 
   let dragging = false;
   let originX = 0;

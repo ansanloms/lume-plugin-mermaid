@@ -1,0 +1,23 @@
+{
+  "name": "lume-plugin-mermaid",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "mod.ts",
+  "scripts": {
+    "build": "lume build",
+    "serve": "lume build -s",
+    "check": "tsc --noEmit",
+    "lint": "oxlint . && oxfmt --check .",
+    "fix": "oxlint . --fix && oxfmt ."
+  },
+  "devDependencies": {
+    "@lumeland/lume": "4.0.2",
+    "oxfmt": "0.76.0",
+    "oxlint": "1.94.0",
+    "typescript": "7.0.2"
+  },
+  "peerDependencies": {
+    "@lumeland/core": "^1.0.4"
+  }
+}

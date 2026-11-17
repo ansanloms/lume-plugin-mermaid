@@ -1,13 +1,14 @@
 const button = document.getElementById("change-color-scheme");
 
 const isDark = () => {
-  return globalThis.window.matchMedia &&
-    globalThis.window.matchMedia("(prefers-color-scheme: dark)").matches;
+  return (
+    globalThis.window.matchMedia &&
+    globalThis.window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
 };
 
 export const getCurrentColorScheme = () => {
-  return localStorage.getItem("color-scheme") ??
-    (isDark() ? "dark" : "light");
+  return localStorage.getItem("color-scheme") ?? (isDark() ? "dark" : "light");
 };
 
 export const setColorScheme = (colorScheme) => {

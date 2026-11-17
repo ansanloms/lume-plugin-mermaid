@@ -24,10 +24,12 @@ export const run = async (options) => {
     enableCopy,
   } = options;
 
-  mermaid.registerIconPacks(icons.map(({ name, url }) => ({
-    name,
-    loader: () => fetch(url).then((res) => res.json()),
-  })));
+  mermaid.registerIconPacks(
+    icons.map(({ name, url }) => ({
+      name,
+      loader: () => fetch(url).then((res) => res.json()),
+    })),
+  );
 
   mermaid.initialize({
     ...config,

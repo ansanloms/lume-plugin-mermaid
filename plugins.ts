@@ -1,7 +1,7 @@
-import { merge } from "lume/core/utils/object.ts";
-import type Site from "lume/core/site.ts";
+import { merge } from "@lumeland/core/utils/object.ts";
+import type Site from "@lumeland/core/site.ts";
 
-import "lume/types.ts";
+import "@lumeland/core/types.ts";
 
 /**
  * icon pack 。
@@ -102,8 +102,7 @@ export const defaults: Options = {
       // 注意: CC-BY-ND-2.0
       // aws-icons-mermaid.json 内に記述あり。
       // ビルド結果にそのままこの json が含まれるからそれでいいはず。
-      url:
-        "https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/refs/tags/v23.0/dist/aws-icons-mermaid.json",
+      url: "https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/refs/tags/v23.0/dist/aws-icons-mermaid.json",
     },
   ],
   querySelector: "pre > code.language-mermaid",
@@ -134,30 +133,21 @@ export default function (userOptions?: Partial<Options>) {
       }
     });
 
-    const mermaidScript = `
-import mermaid from "${site.url("/mermaid/mermaid.esm.min.mjs")}";
-import { run } from "${site.url(options.scriptSrc)}";
-import { enableZoom } from "${site.url("/mermaid/scripts/zoom.mjs")}";
-import { enableCopy } from "${site.url("/mermaid/scripts/copy.mjs")}";
-
-await run({
-  mermaid,
-  config: ${JSON.stringify(options.config)},
-  icons: ${
-      JSON.stringify(
-        options.icons.map((icon) => ({
-          name: icon.name,
-          url: site.url(`/mermaid/icons/${icon.name}.json`),
-        })),
-      )
-    },
-  querySelector: "${options.querySelector}",
-  zoom: ${JSON.stringify(options.zoom)},
-  enableZoom,
-  enableCopy,
-})
-
-`.trim();
+    const payload = {
+      mermaidSrc: site.url("/mermaid/mermaid.esm.min.mjs"),
+      runnerSrc: site.url(options.scriptSrc),
+      zoomSrc: site.url("/mermaid/scripts/zoom.mjs"),
+      copySrc: site.url("/mermaid/scripts/copy.mjs"),
+      config: options.config,
+      icons: options.icons.map((icon) => ({
+        name: icon.name,
+        url: site.url(`/mermaid/icons/${icon.name}.json`),
+      })),
+      querySelector: options.querySelector,
+      zoom: options.zoom,
+    };
+    const bootstrapSrc = site.url("/mermaid/scripts/bootstrap.mjs");
+    const payloadJson = JSON.stringify(payload);
 
     site.process([".html"], (pages) => {
       for (const page of pages) {
@@ -167,7 +157,8 @@ await run({
 
         const script = page.document.createElement("script");
         script.setAttribute("type", "module");
-        script.innerText = mermaidScript;
+        script.setAttribute("src", bootstrapSrc);
+        script.setAttribute("data-lume-mermaid", payloadJson);
 
         page.document.body.append(script);
       }

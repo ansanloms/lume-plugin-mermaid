@@ -25,10 +25,12 @@ export const run = async (options) => {
     enableCopy,
   } = options;
 
-  mermaid.registerIconPacks(icons.map(({ name, url }) => ({
-    name,
-    loader: () => fetch(url).then((res) => res.json()),
-  })));
+  mermaid.registerIconPacks(
+    icons.map(({ name, url }) => ({
+      name,
+      loader: () => fetch(url).then((res) => res.json()),
+    })),
+  );
 
   mermaid.initialize({
     ...config,
@@ -70,9 +72,7 @@ globalThis.addEventListener("changeColorScheme", async (event) => {
     startOnLoad: false,
   });
 
-  for (
-    const element of Array.from(document.querySelectorAll(querySelector))
-  ) {
+  for (const element of Array.from(document.querySelectorAll(querySelector))) {
     delete element.dataset.processed;
     element.innerHTML = element.dataset.mermaid;
   }
