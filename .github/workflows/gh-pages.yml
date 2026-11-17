@@ -6,6 +6,10 @@ on:
 
 permissions: {}
 
+concurrency:
+  group: gh-pages-deploy
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
