@@ -17,14 +17,14 @@ This package is distributed as TypeScript source and is loaded directly by the L
 Install the plugin from GitHub. The package is not published to npm.
 
 ```sh
-npm install github:ansanloms/lume-plugin-mermaid#0.1.0
+npm install github:ansanloms/lume-plugin-mermaid#0.1.1
 ```
 
 Load the plugin in your `_config.ts`.
 
 ```ts
 import lume from "@lumeland/lume";
-import mermaid from "lume-plugin-mermaid";
+import mermaid from "@ansanloms/lume-plugin-mermaid";
 
 const site = lume();
 
