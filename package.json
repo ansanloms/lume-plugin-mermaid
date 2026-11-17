@@ -12,10 +12,10 @@
     "fix": "oxlint . --fix && oxfmt ."
   },
   "devDependencies": {
-    "@lumeland/lume": "^4.0.2",
-    "oxfmt": "^0.76.0",
-    "oxlint": "^1.90.0",
-    "typescript": "^7.0.2"
+    "@lumeland/lume": "4.0.2",
+    "oxfmt": "0.76.0",
+    "oxlint": "1.94.0",
+    "typescript": "7.0.2"
   },
   "peerDependencies": {
     "@lumeland/core": "^1.0.4"
